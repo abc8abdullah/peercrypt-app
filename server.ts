@@ -3,11 +3,20 @@ import http from 'http';
 import { WebSocketServer, WebSocket } from 'ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors'; // <-- ১. CORS ইম্পোর্ট করা হলো
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// ২. CORS মিডলওয়্যার এনাবল করা হলো যাতে ফায়ারবেস থেকে রিকোয়েস্ট ব্লক না হয়
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const server = http.createServer(app);
@@ -36,7 +45,7 @@ const activeSockets = new Map<string, WebSocket>();
 app.post('/api/auth/login', (req, res) => {
   const { userId, password } = req.body;
   if (!userId || !password) {
-    return res.status(400).json({ success: false, message: 'ইউজার আইডি এবং পাসওয়ার্ড উভয়ই প্রয়োজন।' });
+    return res.status(400).json({ success: false, message: 'ইউজার আইডি এবং পাসওয়ার্ড উভয়ই প্রয়োজন।' });
   }
 
   const cleanId = String(userId).trim().toLowerCase();
@@ -45,7 +54,7 @@ app.post('/api/auth/login', (req, res) => {
   if (!user || user.password !== String(password).trim()) {
     return res.status(401).json({
       success: false,
-      message: 'ভুল ইউজার আইডি বা পাসওয়ার্ড! অনুগ্রহ করে সঠিক তথ্য দিন।',
+      message: 'ভুল ইউজার আইডি বা পাসওয়ার্ড! অনুগ্রহ করে সঠিক তথ্য দিন।',
     });
   }
 
@@ -76,7 +85,7 @@ app.post('/api/auth/update', (req, res) => {
   const user = usersDatabase[cleanId];
 
   if (!user) {
-    return res.status(404).json({ success: false, message: 'ইউজার পাওয়া যায়নি।' });
+    return res.status(404).json({ success: false, message: 'ইউজার পাওয়া যায়নি।' });
   }
 
   if (name && typeof name === 'string') {
