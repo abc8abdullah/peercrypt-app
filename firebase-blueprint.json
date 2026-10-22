@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile and presence information",
+      "type": "object",
+      "properties": {
+        "displayName": {
+          "type": "string",
+          "description": "Display name of the user",
+          "maxLength": 100
+        },
+        "avatarColor": {
+          "type": "string",
+          "description": "Avatar tailwind gradient class",
+          "maxLength": 80
+        },
+        "isOnline": {
+          "type": "boolean",
+          "description": "Online presence status"
+        },
+        "lastSeen": {
+          "type": "string",
+          "description": "Server timestamp of last activity"
+        }
+      },
+      "required": ["displayName", "isOnline"]
+    },
+    "EncryptedChatMessage": {
+      "title": "EncryptedChatMessage",
+      "description": "Client-side AES-GCM encrypted message packet with zero server plaintext",
+      "type": "object",
+      "properties": {
+        "senderId": {
+          "type": "string",
+          "description": "UID of the message sender",
+          "maxLength": 128
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Sender display name",
+          "maxLength": 100
+        },
+        "type": {
+          "type": "string",
+          "description": "Message category",
+          "enum": ["text", "file", "audio-note", "system"]
+        },
+        "ciphertext": {
+          "type": "string",
+          "description": "AES-256-GCM Base64 encrypted payload",
+          "maxLength": 2000000
+        },
+        "iv": {
+          "type": "string",
+          "description": "Initialization Vector Base64",
+          "maxLength": 64
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Server timestamp of dispatch"
+        },
+        "expiresAt": {
+          "type": "number",
+          "description": "Optional self-destruct epoch timestamp"
+        },
+        "disappearingSeconds": {
+          "type": "number",
+          "description": "Configured disappearing duration"
+        }
+      },
+      "required": ["senderId", "senderName", "type", "ciphertext", "iv"]
+    },
+    "SignalingPayload": {
+      "title": "SignalingPayload",
+      "description": "WebRTC SDP Offer, Answer, and ICE Candidate signaling item",
+      "type": "object",
+      "properties": {
+        "senderId": {
+          "type": "string",
+          "description": "UID of the signaling peer",
+          "maxLength": 128
+        },
+        "targetId": {
+          "type": "string",
+          "description": "UID of the destination peer",
+          "maxLength": 128
+        },
+        "type": {
+          "type": "string",
+          "description": "Signal type",
+          "enum": ["sdp-offer", "sdp-answer", "ice-candidate", "call-request", "call-accept", "call-reject", "call-hangup", "disappearing-timer"]
+        },
+        "data": {
+          "type": "string",
+          "description": "JSON string of candidate or SDP session parameters",
+          "maxLength": 50000
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Server timestamp of signal"
+        }
+      },
+      "required": ["senderId", "targetId", "type", "data"]
+    },
+    "ScreenshotAlert": {
+      "title": "ScreenshotAlert",
+      "description": "Real-time alert notification when a peer attempts a screenshot",
+      "type": "object",
+      "properties": {
+        "senderId": {
+          "type": "string",
+          "description": "UID of the user who triggered the screenshot attempt",
+          "maxLength": 128
+        },
+        "senderName": {
+          "type": "string",
+          "description": "Name of the user who attempted the screenshot",
+          "maxLength": 100
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Server timestamp when attempt was detected"
+        }
+      },
+      "required": ["senderId", "senderName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Public presence and profile of authenticated peers"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/EncryptedChatMessage"
+      },
+      "description": "End-to-end encrypted message stream"
+    },
+    "/conversations/{conversationId}/signals/{signalId}": {
+      "schema": {
+        "$ref": "#/entities/SignalingPayload"
+      },
+      "description": "WebRTC ephemeral signaling mailbox"
+    },
+    "/conversations/{conversationId}/alerts/{alertId}": {
+      "schema": {
+        "$ref": "#/entities/ScreenshotAlert"
+      },
+      "description": "Real-time anti-screenshot alarm channel"
+    }
+  }
+}

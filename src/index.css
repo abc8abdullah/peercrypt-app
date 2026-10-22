@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+@layer base {
+  html, body {
+    height: 100%;
+    height: 100dvh;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: 'Hind Siliguri', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #0a0e17;
+    color: #e2e8f0;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'Fira Code', monospace;
+  }
+
+  button, a {
+    touch-action: manipulation;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(71, 85, 105, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
+
+/* iOS Safe Area insets */
+.safe-top {
+  padding-top: max(12px, env(safe-area-inset-top, 12px));
+}
+
+.safe-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s infinite ease-in-out;
+}
+
+@keyframes radar {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.animate-radar {
+  animation: radar 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}

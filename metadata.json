@@ -1,0 +1,6 @@
+{
+  "name": "PeerCrypt E2EE - P2P Chat & Calls",
+  "description": "Zero-knowledge end-to-end encrypted 2-user peer-to-peer messaging, audio, and video calling application powered by WebRTC with zero server storage.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
