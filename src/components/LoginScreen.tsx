@@ -37,7 +37,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({
     const targetPwd = pwdToUse || password;
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const apiUrl = import.meta.env.PROD 
+        ? 'https://peercrypt-app.onrender.com/api/auth/login' 
+        : 'http://localhost:3000/api/auth/login';
+
+      const res = await fetch(apiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: targetUid, password: targetPwd }),

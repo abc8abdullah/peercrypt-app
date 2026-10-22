@@ -232,10 +232,8 @@ export default function App() {
       console.error('Key derivation failed:', err);
     }
 
-    // Connect WebSocket
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const ws = new WebSocket(wsUrl);
+    // Connect WebSocket to Render Backend directly
+    const ws = new WebSocket('wss://peercrypt-app.onrender.com/ws');
     wsRef.current = ws;
 
     ws.onopen = () => {
